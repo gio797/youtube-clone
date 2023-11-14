@@ -16,8 +16,10 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
+import { Link } from "react-router-dom";
 
 type Props = {
+  darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -82,14 +84,16 @@ const Title = styled.h2`
   margin-bottom: 12px;
 `;
 
-function Menu({ setDarkMode }: Props) {
+function Menu({ darkMode, setDarkMode }: Props) {
   return (
     <Container>
       <Wrapper>
-        <Logo>
-          <Img src={logo} />
-          GMTube
-        </Logo>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Logo>
+            <Img src={logo} />
+            GMTube
+          </Logo>
+        </Link>
         <Item>
           <HomeIcon />
           Home
@@ -160,7 +164,7 @@ function Menu({ setDarkMode }: Props) {
         </Item>
         <Item onClick={() => setDarkMode((prev) => !prev)}>
           <SettingsBrightnessOutlinedIcon />
-          Light Mode
+          {darkMode ? "Light" : "Dark"} Mode
         </Item>
       </Wrapper>
     </Container>

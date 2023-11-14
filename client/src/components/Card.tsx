@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 type Props = {};
@@ -49,17 +50,19 @@ const Info = styled.p`
 
 function Card({}: Props) {
   return (
-    <Container>
-      <Image />
-      <Details>
-        <ChannelImage />
-        <Texts>
-          <Title>Test Video</Title>
-          <ChannelName>Gio's Channel</ChannelName>
-          <Info>Lorem ipsum dolor sit amet.</Info>
-        </Texts>
-      </Details>
-    </Container>
+    <Link to="/video/test" style={{ textDecoration: "none" }}>
+      <Container>
+        <Image />
+        <Details>
+          <ChannelImage />
+          <Texts>
+            <Title>Test Video</Title>
+            <ChannelName>Gio's Channel</ChannelName>
+            <Info>Lorem ipsum dolor sit amet.</Info>
+          </Texts>
+        </Details>
+      </Container>
+    </Link>
   );
 }
 
