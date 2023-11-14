@@ -55,6 +55,10 @@ const Item = styled.div`
   gap: 20px;
   cursor: pointer;
   padding-block: 7px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.soft};
+  }
 `;
 
 const Hr = styled.hr`
@@ -63,6 +67,7 @@ const Hr = styled.hr`
 `;
 
 const Login = styled.div``;
+
 const Button = styled.button`
   display: flex;
   align-items: center;
