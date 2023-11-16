@@ -60,7 +60,6 @@ const Info = styled.div`
 `;
 
 function Card({ type, video }: CardProps) {
-  // const [channel, setChannel] = useState<User>({});
   const [channel, setChannel] = useState<User | undefined>(undefined);
 
   useEffect(() => {

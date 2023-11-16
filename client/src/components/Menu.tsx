@@ -17,6 +17,8 @@ import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 type Props = {
   darkMode: boolean;
@@ -90,6 +92,7 @@ const Title = styled.h2`
 `;
 
 function Menu({ darkMode, setDarkMode }: Props) {
+  const { currentUser } = useSelector((state: RootState) => state.user);
   return (
     <Container>
       <Wrapper>
@@ -128,16 +131,20 @@ function Menu({ darkMode, setDarkMode }: Props) {
           History
         </Item>
         <Hr />
-        <Login>
-          Sign in to like videos, comment and subscribe.
-          <Link to="/signin" style={{ textDecoration: "none" }}>
-            <Button>
-              <AccountCircleOutlinedIcon />
-              SIGN IN
-            </Button>
-          </Link>
-        </Login>
-        <Hr />
+        {!currentUser && (
+          <>
+            <Login>
+              Sign in to like videos, comment and subscribe.
+              <Link to="/signin" style={{ textDecoration: "none" }}>
+                <Button>
+                  <AccountCircleOutlinedIcon />
+                  SIGN IN
+                </Button>
+              </Link>
+            </Login>
+            <Hr />
+          </>
+        )}
         <Title>Best of GMTube</Title>
         <Item>
           <LibraryMusicOutlinedIcon />

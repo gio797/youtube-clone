@@ -1,4 +1,8 @@
+import axios from "axios";
+import { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
 
 type Props = {};
 
@@ -65,18 +69,59 @@ const Link = styled.span`
 `;
 
 function SignIn({}: Props) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const handleLogin = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    dispatch(loginStart());
+    try {
+      const res = await axios.post("http://localhost:8800/api/auth/signin", {
+        name,
+        password,
+      });
+      dispatch(loginSuccess(res.data));
+    } catch (err) {
+      dispatch(loginFailure());
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
         <SubTitle>to continue to GMTube</SubTitle>
-        <Input placeholder="username" />
-        <Input type="password" placeholder="password" />
-        <Button>Sign in</Button>
+        <Input
+          placeholder="username"
+          type="text"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={handleLogin}>Sign in</Button>
         <Title>or</Title>
-        <Input placeholder="username" />
-        <Input placeholder="email" />
-        <Input type="password" placeholder="password" />
+        <Input
+          placeholder="username"
+          type="text"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          placeholder="email"
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <Button>Sign up</Button>
       </Wrapper>
       <More>
