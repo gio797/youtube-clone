@@ -8,7 +8,20 @@ export type Video = {
   tags: string[];
   likes: string[];
   dislikes: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type User = {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  img: string;
+  subscribers: number;
+  subscribedUsers: string[];
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };

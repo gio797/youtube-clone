@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { Video } from "../types";
+import { Video, User } from "../types";
 import { format } from "timeago.js";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 type CardProps = {
   type?: string;
-  video?: Video; // Add this line
+  video?: Video;
 };
 
 const Container = styled.div<CardProps>`
@@ -58,18 +60,29 @@ const Info = styled.div`
 `;
 
 function Card({ type, video }: CardProps) {
+  // const [channel, setChannel] = useState<User>({});
+  const [channel, setChannel] = useState<User | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchChannel = async () => {
+      const res = await axios.get(
+        `http://localhost:8800/api/users/find/${video?.userId}`
+      );
+      setChannel(res.data);
+    };
+
+    fetchChannel();
+  }, [video?.userId]);
+
   return (
     <Link to="/video/test" style={{ textDecoration: "none" }}>
       <Container type={type}>
         <Image type={type} src={video?.imgUrl} />
         <Details type={type}>
-          <ChannelImage
-            type={type}
-            src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo"
-          />
+          <ChannelImage type={type} src={channel?.img} />
           <Texts>
             <Title>{video?.title}</Title>
-            <ChannelName>GM Dev</ChannelName>
+            <ChannelName>{channel?.name}</ChannelName>
             <Info>
               {video?.views} views • {format(video?.createdAt ?? new Date())}
             </Info>
