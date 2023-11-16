@@ -1,8 +1,12 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../components/Card";
+import axios from "axios";
+import { Video } from "../types";
 
-type Props = {};
+type Props = {
+  displayType: "random" | "trend" | "sub";
+};
 
 const Container = styled.div`
   display: flex;
@@ -10,26 +14,25 @@ const Container = styled.div`
   flex-wrap: wrap;
 `;
 
-function Home({}: Props) {
+function Home({ displayType }: Props) {
+  const [videos, setVideos] = useState<Video[]>([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const res = await axios.get(
+        `http://localhost:8800/api/videos/${displayType}`
+      );
+      setVideos(res.data);
+    };
+
+    fetchVideos();
+  }, [displayType]);
+
   return (
     <Container>
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
+      {videos.map((video) => (
+        <Card key={video._id} video={video} />
+      ))}
     </Container>
   );
 }
