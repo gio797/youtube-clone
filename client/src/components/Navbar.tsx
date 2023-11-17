@@ -3,8 +3,9 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { loginFailure, logout } from "../redux/userSlice";
 
 type Props = {};
 
@@ -72,7 +73,12 @@ const Avatar = styled.img`
 `;
 
 function Navbar({}: Props) {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   return (
     <Container>
       <Wrapper>
@@ -85,6 +91,9 @@ function Navbar({}: Props) {
             <VideoCallOutlinedIcon />
             <Avatar src={currentUser.img} />
             {currentUser.name}
+            <Button onClick={handleLogout}>
+              <AccountCircleOutlinedIcon /> Log out
+            </Button>
           </User>
         ) : (
           <Link to="/signin" style={{ textDecoration: "none" }}>
