@@ -21,6 +21,7 @@ export type User = {
   img: string;
   subscribers: number;
   subscribedUsers: string[];
+  fromGoogle: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;
