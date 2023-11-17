@@ -20,7 +20,8 @@ function Home({ displayType }: Props) {
   useEffect(() => {
     const fetchVideos = async () => {
       const res = await axios.get(
-        `http://localhost:8800/api/videos/${displayType}`
+        `http://localhost:8800/api/videos/${displayType}`,
+        { withCredentials: true }
       );
       setVideos(res.data);
     };

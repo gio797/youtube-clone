@@ -77,13 +77,17 @@ function SignIn({}: Props) {
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    e.preventDefault();
+    // e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await axios.post("http://localhost:8800/api/auth/signin", {
-        name,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:8800/api/auth/signin",
+        {
+          name,
+          password,
+        },
+        { withCredentials: true }
+      );
       dispatch(loginSuccess(res.data));
     } catch (err) {
       dispatch(loginFailure());
