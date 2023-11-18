@@ -37,6 +37,16 @@ export const signin = async (req, res, next) => {
   }
 };
 
+export const logout = (req, res) => {
+  res
+    .clearCookie("access_token", {
+      secure: true,
+      sameSite: "none",
+    })
+    .status(200)
+    .json("User has been logged out.");
+};
+
 export const googleAuth = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });

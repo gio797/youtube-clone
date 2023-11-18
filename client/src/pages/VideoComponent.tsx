@@ -5,6 +5,14 @@ import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
 import Comments from "../components/Comments";
 import Card from "../components/Card";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { User, Video } from "../types";
+import { fetchSuccess } from "../redux/videoSlice";
+import { format } from "timeago.js";
 
 type Props = {};
 
@@ -107,7 +115,33 @@ const Subscribe = styled.button`
   cursor: pointer;
 `;
 
-function Video({}: Props) {
+function VideoComponent({}: Props) {
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const { currentVideo } = useSelector((state: RootState) => state.video);
+  const dispatch = useDispatch();
+
+  const path = useLocation().pathname.split("/")[2];
+
+  const [channel, setChannel] = useState<User | null>(null);
+
+  // console.log(channel);
+  useEffect(() => {
+    async function getVideo() {
+      try {
+        const videoRes = await axios.get(
+          `http://localhost:8800/api/videos/find/${path}`
+        );
+        const channelRes = await axios.get(
+          `http://localhost:8800/api/users/find/${videoRes.data.userId}`
+        );
+        console.log(channel);
+        setChannel(channelRes.data);
+        dispatch(fetchSuccess(videoRes.data));
+      } catch (err) {}
+    }
+    getVideo();
+  }, [path]);
+
   return (
     <Container>
       <Content>
@@ -122,15 +156,17 @@ function Video({}: Props) {
             allowFullScreen
           ></iframe>
         </VideoWrapper>
-        <Title>My video</Title>
+        <Title>{currentVideo?.title}</Title>
         <Details>
-          <Info>123456 views, june 3023</Info>
+          <Info>
+            {currentVideo?.views} views, {format(currentVideo?.createdAt)}
+          </Info>
           <Buttons>
             <Button>
-              <ThumbUpOutlinedIcon /> 123
+              <ThumbUpOutlinedIcon /> {currentVideo?.likes.length}
             </Button>
             <Button>
-              <ThumbDownOffAltOutlinedIcon /> Dislike
+              <ThumbDownOffAltOutlinedIcon /> {currentUser.dislikes}
             </Button>
             <Button>
               <ReplyOutlinedIcon /> Share
@@ -143,16 +179,13 @@ function Video({}: Props) {
         <Hr />
         <Channel>
           <ChannelInfo>
-            <Image src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo" />
+            <Image src={channel?.img} />
             <ChannelDetail>
-              <ChannelName>Gio Dev</ChannelName>
-              <ChannelCounter>1K subscribers</ChannelCounter>
-              <Description>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Doloribus laborum delectus unde quaerat dolore culpa sit aliquam
-                at. Vitae facere ipsum totam ratione exercitationem. Suscipit
-                animi accusantium dolores ipsam ut.
-              </Description>
+              <ChannelName>{channel?.name}</ChannelName>
+              <ChannelCounter>
+                {channel?.subscribers} subscribers
+              </ChannelCounter>
+              <Description>{currentVideo.desc}</Description>
             </ChannelDetail>
           </ChannelInfo>
           <Subscribe>SUBSCRIBE</Subscribe>
@@ -160,16 +193,16 @@ function Video({}: Props) {
         <Hr />
         <Comments />
       </Content>
-      <Recommendation>
+      {/* <Recommendation>
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
         <Card type="sm" />
-      </Recommendation>
+      </Recommendation> */}
     </Container>
   );
 }
 
-export default Video;
+export default VideoComponent;

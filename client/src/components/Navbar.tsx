@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { loginFailure, logout } from "../redux/userSlice";
+import axios from "axios";
 
 type Props = {};
 
@@ -76,8 +77,15 @@ function Navbar({}: Props) {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("http://localhost:8800/api/auth/logout", {
+        withCredentials: true,
+      });
+      dispatch(logout(res.data));
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <Container>
