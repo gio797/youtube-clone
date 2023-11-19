@@ -81,7 +81,7 @@ function SignIn({}: Props) {
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    // e.preventDefault();
+    e.preventDefault();
     dispatch(loginStart());
     try {
       const res = await axios.post(

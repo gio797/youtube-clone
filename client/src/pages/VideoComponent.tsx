@@ -3,15 +3,16 @@ import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import AddTaskOutlinedIcon from "@mui/icons-material/AddTaskOutlined";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Comments from "../components/Comments";
-import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { User, Video } from "../types";
-import { fetchSuccess } from "../redux/videoSlice";
+import { User } from "../types";
+import { fetchSuccess, like, dislike } from "../redux/videoSlice";
 import { format } from "timeago.js";
 
 type Props = {};
@@ -134,13 +135,51 @@ function VideoComponent({}: Props) {
         const channelRes = await axios.get(
           `http://localhost:8800/api/users/find/${videoRes.data.userId}`
         );
-        console.log(channel);
+
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
       } catch (err) {}
     }
     getVideo();
   }, [path]);
+
+  async function handleLike() {
+    try {
+      if (!currentVideo.likes) {
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:8800/api/users/like/${currentVideo._id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      dispatch(like(currentUser._id));
+    } catch (error) {
+      console.error("Error liking video:", error);
+    }
+  }
+
+  const handleDislike = async () => {
+    try {
+      if (!currentVideo.dislikes) {
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:8800/api/users/dislike/${currentVideo._id}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      dispatch(dislike(currentUser._id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container>
@@ -162,11 +201,23 @@ function VideoComponent({}: Props) {
             {currentVideo?.views} views, {format(currentVideo?.createdAt)}
           </Info>
           <Buttons>
-            <Button>
-              <ThumbUpOutlinedIcon /> {currentVideo?.likes.length}
+            <Button onClick={handleLike}>
+              {currentVideo.likes &&
+              currentVideo.likes.includes(currentUser?._id) ? (
+                <ThumbUpIcon />
+              ) : (
+                <ThumbUpOutlinedIcon />
+              )}
+              {currentVideo.likes && currentVideo?.likes.length}
             </Button>
-            <Button>
-              <ThumbDownOffAltOutlinedIcon /> {currentUser.dislikes}
+            <Button onClick={handleDislike}>
+              {currentVideo.dislikes &&
+              currentVideo.dislikes.includes(currentUser?._id) ? (
+                <ThumbDownIcon />
+              ) : (
+                <ThumbDownOffAltOutlinedIcon />
+              )}
+              Dislike
             </Button>
             <Button>
               <ReplyOutlinedIcon /> Share

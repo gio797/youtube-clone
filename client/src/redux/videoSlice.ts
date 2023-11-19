@@ -28,6 +28,27 @@ export const videoSlice = createSlice({
     fetchFailure: (state) => {
       state.loading = false;
       state.error = true;
+    },
+    like:(state, action:PayloadAction<any>) => {
+      if(!state.currentVideo.likes.includes(action.payload)){
+        state.currentVideo.likes.push(action.payload)
+        state.currentVideo.dislikes.splice(
+          state.currentVideo.dislikes.findIndex(
+            (userId:string) => userId === action.payload
+          ), 1
+        )
+      }
+    },
+
+    dislike:(state, action:PayloadAction<any>) => {
+      if(!state.currentVideo.dislikes.includes(action.payload)){
+        state.currentVideo.dislikes.push(action.payload)
+        state.currentVideo.likes.splice(
+          state.currentVideo.likes.findIndex(
+            (userId:string) => userId === action.payload
+          ), 1
+        )
+      }
     }
   },
 });
@@ -39,6 +60,6 @@ export type VideoActions =
   | ReturnType<typeof fetchFailure>
 
 // Export the actions and reducer
-export const { fetchStart, fetchSuccess, fetchFailure } =
+export const { fetchStart, fetchSuccess, fetchFailure, like, dislike } =
   videoSlice.actions;
 export default videoSlice.reducer;
