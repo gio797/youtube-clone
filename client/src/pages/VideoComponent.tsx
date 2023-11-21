@@ -14,6 +14,7 @@ import axios from "axios";
 import { User } from "../types";
 import { fetchSuccess, like, dislike } from "../redux/videoSlice";
 import { format } from "timeago.js";
+import { subscription } from "../redux/userSlice";
 
 type Props = {};
 
@@ -116,6 +117,12 @@ const Subscribe = styled.button`
   cursor: pointer;
 `;
 
+const VideoFrame = styled.video`
+  max-height: 720px;
+  width: 100%;
+  object-fit: cover;
+`;
+
 function VideoComponent({}: Props) {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { currentVideo } = useSelector((state: RootState) => state.video);
@@ -125,7 +132,6 @@ function VideoComponent({}: Props) {
 
   const [channel, setChannel] = useState<User | null>(null);
 
-  // console.log(channel);
   useEffect(() => {
     async function getVideo() {
       try {
@@ -181,19 +187,37 @@ function VideoComponent({}: Props) {
     }
   };
 
+  async function handleSubscribe() {
+    try {
+      if (!currentUser.subscribedUsers) {
+        return;
+      }
+
+      if (currentUser.subscribedUsers.includes(channel?._id)) {
+        await axios.put(
+          `http://localhost:8800/api/users/unsub/${channel?._id}`,
+          {},
+          { withCredentials: true }
+        );
+      } else {
+        await axios.put(
+          `http://localhost:8800/api/users/sub/${channel?._id}`,
+          {},
+          { withCredentials: true }
+        );
+      }
+
+      dispatch(subscription(channel?._id));
+    } catch (error) {
+      console.error("Error subscribing video:", error);
+    }
+  }
+
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          <iframe
-            width="100%"
-            height="720"
-            src="https://www.youtube.com/embed/k3Vfj-e1Ma4"
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+          <VideoFrame src={currentVideo?.videoUrl} controls />
         </VideoWrapper>
         <Title>{currentVideo?.title}</Title>
         <Details>
@@ -239,7 +263,11 @@ function VideoComponent({}: Props) {
               <Description>{currentVideo.desc}</Description>
             </ChannelDetail>
           </ChannelInfo>
-          <Subscribe>SUBSCRIBE</Subscribe>
+          <Subscribe onClick={handleSubscribe}>
+            {currentUser.subscribedUsers?.includes(channel?._id)
+              ? "SUBSCRIBED"
+              : "SUBSCRIBE"}
+          </Subscribe>
         </Channel>
         <Hr />
         <Comments />

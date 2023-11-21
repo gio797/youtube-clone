@@ -34,6 +34,18 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
+    subscription: (state, action) => {
+      if (state.currentUser.subscribedUsers.includes(action.payload)) {
+        state.currentUser.subscribedUsers.splice(
+          state.currentUser.subscribedUsers.findIndex(
+            (channelId:string) => channelId === action.payload
+          ),
+          1
+        );
+      } else {
+        state.currentUser.subscribedUsers.push(action.payload);
+      }
+    }  
   },
 });
 
@@ -42,9 +54,10 @@ export type UserActions =
   | ReturnType<typeof loginStart>
   | ReturnType<typeof loginSuccess>
   | ReturnType<typeof loginFailure>
-  | ReturnType<typeof logout>;
+  | ReturnType<typeof logout>
+  | ReturnType<typeof subscription>;
 
 // Export the actions and reducer
-export const { loginStart, loginSuccess, loginFailure, logout } =
+export const { loginStart, loginSuccess, loginFailure, logout, subscription } =
   userSlice.actions;
 export default userSlice.reducer;
