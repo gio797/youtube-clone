@@ -26,3 +26,10 @@ export type User = {
   updatedAt: string;
   __v: number;
 };
+
+export type CommentType = {
+  _id: string;
+  userId: string;
+  videoId: string;
+  desc: string;
+};

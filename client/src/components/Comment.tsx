@@ -1,6 +1,11 @@
 import styled from "styled-components";
+import { CommentType, User } from "../types";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-type Props = {};
+type Props = {
+  comment: CommentType;
+};
 
 const Container = styled.div`
   display: flex;
@@ -37,20 +42,27 @@ const Text = styled.span`
   font-size: 14px;
 `;
 
-function Comment({}: Props) {
+function Comment({ comment }: Props) {
+  const [channel, setChannel] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function fetchComment() {
+      const res = await axios.get(
+        `http://localhost:8800/api/users/find/${comment.userId}`
+      );
+      setChannel(res.data);
+    }
+    fetchComment();
+  }, [comment.userId]);
+
   return (
     <Container>
-      <Avatar src="https://yt3.ggpht.com/yti/APfAmoE-Q0ZLJ4vk3vqmV4Kwp0sbrjxLyB8Q4ZgNsiRH=s88-c-k-c0x00ffffff-no-rj-mo" />
+      <Avatar src={channel?.img} />
       <Details>
         <Name>
-          John Doe <Date>1 day ago</Date>
+          {channel?.name} <Date>1 day ago</Date>
         </Name>
-        <Text>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, ex
-          laboriosam ipsam aliquam voluptatem perferendis provident modi, sequi
-          tempore reiciendis quod, optio ullam cumque? Quidem numquam sint
-          mollitia totam reiciendis?
-        </Text>
+        <Text>{comment.desc}</Text>
       </Details>
     </Container>
   );
