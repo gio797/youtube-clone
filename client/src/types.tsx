@@ -32,4 +32,5 @@ export type CommentType = {
   userId: string;
   videoId: string;
   desc: string;
+  createdAt: string;
 };

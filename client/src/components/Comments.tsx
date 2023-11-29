@@ -38,7 +38,7 @@ function Comments({ videoId }: Props) {
   const { currentUser } = useSelector((state: RootState) => state.user);
 
   const [comments, setComments] = useState<CommentType[]>([]);
-  console.log(comments);
+
   useEffect(() => {
     const fetchComments = async () => {
       try {

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { CommentType, User } from "../types";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { format } from "timeago.js";
 
 type Props = {
   comment: CommentType;
@@ -60,7 +61,8 @@ function Comment({ comment }: Props) {
       <Avatar src={channel?.img} />
       <Details>
         <Name>
-          {channel?.name} <Date>1 day ago</Date>
+          {channel?.name}
+          <Date>{format(comment?.createdAt)}</Date>
         </Name>
         <Text>{comment.desc}</Text>
       </Details>
